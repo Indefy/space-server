@@ -5,13 +5,11 @@ require("dotenv").config();
 
 const Mission = require("./models/Mission");
 
-// Connect to MongoDB using the URI from the .env file
 mongoose
 	.connect(process.env.MONGODB_URI)
 	.then(() => console.log("MongoDB connected"))
 	.catch((err) => console.log(err));
 
-// Define your type definitions (schema)
 const typeDefs = gql`
 	type Mission {
 		id: ID!
@@ -52,7 +50,6 @@ const typeDefs = gql`
 	}
 `;
 
-// Define your resolvers
 const resolvers = {
 	Query: {
 		missions: async () => await Mission.find(),
@@ -71,7 +68,6 @@ const resolvers = {
 	},
 };
 
-// Create an Apollo server
 const server = new ApolloServer({ typeDefs, resolvers });
 
 const app = express();
