@@ -1,17 +1,16 @@
 const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 require("dotenv").config();
 
 const Mission = require("./models/Mission");
 
-// Connect to MongoDB using the URI from the .env file
 mongoose
 	.connect(process.env.MONGODB_URI)
 	.then(() => console.log("MongoDB connected"))
 	.catch((err) => console.log(err));
 
-// Define your type definitions (schema)
 const typeDefs = gql`
 	type Mission {
 		id: ID!
@@ -71,14 +70,16 @@ const resolvers = {
 	},
 };
 
-// Create an Apollo server
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	persistedQueries: false, // Disable persisted queries
+	persistedQueries: false,
 });
 
 const app = express();
+
+app.use(cors());
+
 server.start().then(() => {
 	server.applyMiddleware({ app });
 
@@ -86,6 +87,7 @@ server.start().then(() => {
 		console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
 	);
 });
+
 // const express = require("express");
 // const { ApolloServer, gql } = require("apollo-server-express");
 // const mongoose = require("mongoose");
